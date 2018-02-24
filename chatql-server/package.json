@@ -1,0 +1,20 @@
+{
+  "name": "chatql-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "npm-run-all --parallel start playground",
+    "playground": "graphql playground"
+  },
+  "author": "Riley Kacmarynski",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.6.0",
+    "azure-storage": "^2.8.0",
+    "documentdb": "^1.14.2",
+    "graphql-yoga": "^1.3.6"
+  }
+}
