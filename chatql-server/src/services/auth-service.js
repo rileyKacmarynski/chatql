@@ -3,22 +3,30 @@ const  jwt = require('jsonwebtoken');
 const guid = require('guid');
 
 const { insertEntity, queryTable } = require('../helpers/azure-storage-wrapper');
-const { APP_SECRET } = require('../constants');
+const { CONNECTION_STRING, APP_SECRET } = require('../constants');
 
 class AuthService{
 
-    constructor(tableService){
-        this.tableService = tableService;
+    constructor(azure){
+        this.tableService = azure.createTableService(CONNECTION_STRING);
+        this.azure = azure;
     }
 
-    async checkForExistingUser(azure, username){
-        const query = new azure.TableQuery()
+    async getUser(username){
+        const query = new this.azure.TableQuery()
         .where('PartitionKey eq ?', 'User')
         .and('username eq ?', username);
     
+        return await queryTable(this.tableService, query, 'User');
+    }
+
+    async checkForExistingUser(username){
         try{
-            const queryRes = await queryTable(this.tableService, query, 'User');
-            return queryRes.entries.length > 0 ? true : false;
+            const user = await this.getUser(username);
+
+            return user.entries.length > 0 
+                ? true 
+                : false;
         } catch(e) {
             throw new Error(e);
         }
@@ -51,7 +59,29 @@ class AuthService{
     }
 
     async login(username, password){
-        
+        try{
+            let user = await this.getUser(username)
+            if(!user){
+                throw new Error(`could not find user with email: ${args.email}`);
+            }
+            user = user.entries[0];
+            // console.log(user.entries[0]);
+            if(!await bcrypt.compare(password, user.password._)){
+                throw new Error("Invalid password");
+            }
+
+            const token =jwt.sign({ userId: user.id }, APP_SECRET);
+
+            return {
+                token,
+                user: {
+                    username: user.username._,
+                    id: user.RowKey._
+                },
+            };
+        } catch (e){
+            throw e;
+        }
     }
 }
 
