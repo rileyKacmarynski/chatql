@@ -20,6 +20,21 @@ class AuthService{
         return await queryTable(this.tableService, query, 'User');
     }
 
+    async getUserByAuthToken(request){
+        const authHeader = request.get('Authorization');
+        console.log(request.headers.authorization);
+        if(authHeader){
+            const token = authHeader.replace('Bearer ', '');
+            const { userId } = jwt.verify(token, APP_SECRET);
+
+            const query = new this.azure.TableQuery()
+                .where('PartitionKey eq ?', 'User')
+                .and('RowKey eq ?', userId);
+            
+            return await queryTable(this.tableService, query, 'User');
+        }
+    }
+
     async checkForExistingUser(username){
         try{
             const user = await this.getUser(username);

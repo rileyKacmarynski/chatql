@@ -10,7 +10,7 @@ function getAuthService(context){
 
 async function signup(parent, {password, username}, context, info) {
     const authService = getAuthService(context);
-
+    
     if(await authService.checkForExistingUser(username)){
         throw new Error("Username already exists");
     } else {
