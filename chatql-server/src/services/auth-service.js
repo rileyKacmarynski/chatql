@@ -21,17 +21,19 @@ class AuthService{
     }
 
     async getUserByAuthToken(request){
-        const authHeader = request.get('Authorization');
-        console.log(request.headers.authorization);
-        if(authHeader){
-            const token = authHeader.replace('Bearer ', '');
-            const { userId } = jwt.verify(token, APP_SECRET);
-
-            const query = new this.azure.TableQuery()
-                .where('PartitionKey eq ?', 'User')
-                .and('RowKey eq ?', userId);
+        const token = request.headers.authorize;
+        if(token){
+            try{
+                const { userId } = jwt.verify(token, APP_SECRET);
+                const query = new this.azure.TableQuery()
+                    .where('PartitionKey eq ?', 'User')
+                    .and('RowKey eq ?', userId);
+                
+                return await queryTable(this.tableService, query, 'User');
             
-            return await queryTable(this.tableService, query, 'User');
+            } catch (e){
+                throw new Error('Unable to verify id');
+            }
         }
     }
 
@@ -60,7 +62,6 @@ class AuthService{
             const res = await insertEntity(this.tableService, user, 'User');
              
             const token = jwt.sign({ userId: user.RowKey._ }, APP_SECRET);
-            console.log(token);
             return {
                 token,
                 user : {
@@ -80,13 +81,10 @@ class AuthService{
                 throw new Error(`could not find user with email: ${args.email}`);
             }
             user = user.entries[0];
-            // console.log(user.entries[0]);
             if(!await bcrypt.compare(password, user.password._)){
                 throw new Error("Invalid password");
             }
-
-            const token =jwt.sign({ userId: user.id }, APP_SECRET);
-
+            const token = await jwt.sign({ userId: user.RowKey._ }, APP_SECRET);
             return {
                 token,
                 user: {

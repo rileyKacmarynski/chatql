@@ -1,5 +1,4 @@
-
-
+const {MessageService} = require('../services/message-service');
 const {AuthService} = require('../services/auth-service');
 
 function getAuthService(context){
@@ -23,7 +22,16 @@ async function login(parent, args, context, info) {
         .login(args.username, args.password);
 }
 
+function createMessage(parent, args, context, info){
+    var user = context.request.user;
+    if(!user) throw new Error("Not Authorized");
+
+    var messageService = new MessageService(context.azure);
+    return messageService.createMessage(user, content);
+}
+
 module.exports = {
     signup,
     login,
+    createMessage,
 }
