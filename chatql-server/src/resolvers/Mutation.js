@@ -24,6 +24,7 @@ async function login(parent, args, context, info) {
 
 function createMessage(parent, args, context, info){
     var user = context.request.user;
+    const {content} = args;
     if(!user) throw new Error("Not Authorized");
 
     var messageService = new MessageService(context.azure);

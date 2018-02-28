@@ -15,7 +15,7 @@ class AuthService{
     async getUser(username){
         const query = new this.azure.TableQuery()
         .where('PartitionKey eq ?', 'User')
-        .and('username eq ?', username);
+        .and('Username eq ?', username);
     
         return await queryTable(this.tableService, query, 'User');
     }
@@ -55,8 +55,8 @@ class AuthService{
         const user = {
             PartitionKey: {'_': 'User'}, 
             RowKey:  {'_': guid.raw()},
-            username:  {'_': username},
-            password:  {'_': pwd},
+            Username:  {'_': username},
+            Password:  {'_': pwd},
         };
         try {
             const res = await insertEntity(this.tableService, user, 'User');
@@ -81,14 +81,14 @@ class AuthService{
                 throw new Error(`could not find user with email: ${args.email}`);
             }
             user = user.entries[0];
-            if(!await bcrypt.compare(password, user.password._)){
+            if(!await bcrypt.compare(password, user.Password._)){
                 throw new Error("Invalid password");
             }
             const token = await jwt.sign({ userId: user.RowKey._ }, APP_SECRET);
             return {
                 token,
                 user: {
-                    username: user.username._,
+                    username: user.Username._,
                     id: user.RowKey._
                 },
             };
