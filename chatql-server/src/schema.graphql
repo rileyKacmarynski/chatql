@@ -1,0 +1,31 @@
+type Query {
+  users: [User!]!
+  messages (take: Int): [Message]
+}
+
+type Mutation {
+    signup(password: String!, username: String!): AuthPayload
+    login(username: String!, password: String!): AuthPayload
+    createMessage(userId: ID!, content: String!): Message
+}
+
+type Subscription {
+  newMessage: Message
+}
+
+type AuthPayload {
+    token: String!
+    user: User 
+}
+
+type User {
+  id: ID!
+  username: String!
+}
+
+type Message {
+  id: ID!
+  content: String!
+  timestamp: String
+  sentBy: User
+}
