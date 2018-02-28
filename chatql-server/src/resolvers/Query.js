@@ -1,4 +1,6 @@
 const { CONNECTION_STRING } = require('../constants'); 
+const {MessageService} = require('../services/message-service');
+
 
 function users(parent, args, context, info) {
     const tableService = context.azure.createTableService(CONNECTION_STRING);
@@ -10,8 +12,15 @@ function users(parent, args, context, info) {
         { id: 'asdfasdfasd', username: 'bob'},
         { id: 'asdfafdsafddfasd', username: 'bob'},
     ]
-  }
+}
 
-  module.exports = {
-    users,
-  }
+function messages(parent, {take}, context, info){
+    const messageService = new MessageService(context.azure);
+
+    return messageService.getMessages(take);
+}
+
+module.exports = {
+users,
+messages,
+}

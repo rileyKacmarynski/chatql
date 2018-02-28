@@ -1,6 +1,6 @@
 const guid = require('guid');
 
-const { insertEntity, queryTable } = require('../helpers/azure-storage-wrapper');
+const { insertEntity, queryTable, retrieveEntity } = require('../helpers/azure-storage-wrapper');
 const { CONNECTION_STRING, APP_SECRET } = require('../constants');
 
 class MessageService {
@@ -21,7 +21,6 @@ class MessageService {
         };
         try {
             const res = await insertEntity(this.tableService, message, 'Message');
-             console.log(user.Username._)
             const timestamp = new Date().toLocaleTimeString();
             return {
                 id: message.RowKey._,
@@ -35,6 +34,29 @@ class MessageService {
         } catch (e){
             throw new Error('Unable to register user');
         }
+    }
+
+    async getMessages(take){
+        const query = new this.azure.TableQuery()
+        .where('PartitionKey eq ?', 'Main')
+        .top(take);
+        const messages = await queryTable(this.tableService, query, 'Message');
+        console.log(messages);
+              
+        return messages.entries.map(async (m) => {    
+            
+            const user = await retrieveEntity(this.tableService, 'User', 'User', m.UserId._);
+
+            return {
+                id: m.RowKey._,
+                content: m.Content._,
+                timestamp: m.Timestamp._,
+                sentBy : {
+                    username: user.Username._,
+                    id: user.RowKey._
+                }  
+            }
+        });
     }
 }
 

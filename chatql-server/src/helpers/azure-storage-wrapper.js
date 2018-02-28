@@ -22,9 +22,21 @@ const queryTable = (tableService, query, partitionKey) => {
     });
 }
 
+const retrieveEntity = (tableService, table, partitionKey, rowKey ) => {
+    return new Promise((resolve, reject) => {
+        tableService.retrieveEntity(table, partitionKey, rowKey, (error, result, response) => {
+            if(error){
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
 
 module.exports = {
     insertEntity,
-    queryTable
-
+    queryTable,
+    retrieveEntity,
 }
