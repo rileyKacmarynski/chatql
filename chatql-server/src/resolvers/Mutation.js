@@ -1,5 +1,6 @@
 const {MessageService} = require('../services/message-service');
 const {AuthService} = require('../services/auth-service');
+const { MESSAGE_SUBSCRIPTION_TOPIC } = require('../constants');
 
 function getAuthService(context){
     return new AuthService(
@@ -28,7 +29,10 @@ function createMessage(parent, args, context, info){
     if(!user) throw new Error("Not Authorized");
 
     var messageService = new MessageService(context.azure);
-    return messageService.createMessage(user, content);
+    var message = messageService.createMessage(user, content);
+
+    context.pubSub.publish(MESSAGE_SUBSCRIPTION_TOPIC, { newMessage: message });
+    return message;
 }
 
 module.exports = {

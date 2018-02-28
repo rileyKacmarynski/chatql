@@ -9,6 +9,10 @@ type Mutation {
     createMessage(userId: ID!, content: String!): Message
 }
 
+type Subscription {
+  newMessage: Message
+}
+
 type AuthPayload {
     token: String!
     user: User 

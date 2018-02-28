@@ -16,7 +16,6 @@ function users(parent, args, context, info) {
 
 function messages(parent, {take}, context, info){
     const messageService = new MessageService(context.azure);
-
     return messageService.getMessages(take);
 }
 

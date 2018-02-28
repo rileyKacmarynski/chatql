@@ -1,4 +1,4 @@
-const { GraphQLServer } = require('graphql-yoga')
+const { GraphQLServer, PubSub } = require('graphql-yoga')
 const azure = require('azure-storage');
 const { getUser } = require('./middleware/get-user');
 
@@ -11,14 +11,17 @@ const { CONNECTION_STRING } = require('./constants');
 const resolvers = {
     Query,
     Mutation,
+    Subscription
 };
 
+const pubSub = new PubSub();
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,
     context: req => ({
         ...req,
         azure: azure,
+        pubSub
     })
 })
 

@@ -41,10 +41,8 @@ class MessageService {
         .where('PartitionKey eq ?', 'Main')
         .top(take);
         const messages = await queryTable(this.tableService, query, 'Message');
-        console.log(messages);
               
         return messages.entries.map(async (m) => {    
-            
             const user = await retrieveEntity(this.tableService, 'User', 'User', m.UserId._);
 
             return {
