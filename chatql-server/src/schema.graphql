@@ -1,5 +1,5 @@
 type Query {
-  users: [User!]!
+  users(username: String): [User]
   messages (take: Int): [Message]
 }
 
