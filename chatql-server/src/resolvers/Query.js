@@ -1,17 +1,11 @@
 const { CONNECTION_STRING } = require('../constants'); 
 const {MessageService} = require('../services/message-service');
+const {AuthService} = require('../services/auth-service');
 
+function users(parent, {username}, context, info) {
+    const authService = new AuthService(context.azure);
 
-function users(parent, args, context, info) {
-    const tableService = context.azure.createTableService(CONNECTION_STRING);
-
-    const query = new context.azure.tableQuery()
-        .where('PartitionKey eq ?', 'User');
-    
-    return [
-        { id: 'asdfasdfasd', username: 'bob'},
-        { id: 'asdfafdsafddfasd', username: 'bob'},
-    ]
+    return authService.getUsers(username); 
 }
 
 function messages(parent, {take}, context, info){

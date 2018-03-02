@@ -12,12 +12,22 @@ class AuthService{
         this.azure = azure;
     }
 
-    async getUser(username){
-        const query = new this.azure.TableQuery()
+    async getUsers(username){
+        let query = new this.azure.TableQuery()
         .where('PartitionKey eq ?', 'User')
-        .and('Username eq ?', username);
-    
-        return await queryTable(this.tableService, query, 'User');
+        
+        if(username){
+            query = query.and('Username eq ?', username);
+        }
+        const users = await queryTable(this.tableService, query, 'User');
+        console.log(users);
+
+        return users.entries.map(u => {
+            return {
+                username: u.Username._,
+                id: u.RowKey._
+            };
+        });
     }
 
     async getUserByAuthToken(request){
