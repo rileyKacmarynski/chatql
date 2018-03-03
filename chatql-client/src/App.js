@@ -1,24 +1,28 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import './App.css';
-import { Switch, Route } from 'react-router-dom';
-import { Button } from 'semantic-ui-react';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
-//#E10098
+import Layout from './components/Layout/Layout';
+import Messenger from "./containers/Messenger/Messenger";
+import Login from './containers/Auth/Login/Login';
+import Logout from './containers/Auth/Logout/Logout';
+import Signup from './containers/Auth/Signup/Signup';
 
 class App extends Component {
   render() {
+    let routes= (
+      <Switch>
+        <Route path="/login" component={Login} />
+        <Route path="/logout" component={Logout} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/" exact component={Messenger} />
+        <Redirect to="/" />
+      </Switch>
+    )
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <Button content='Primary' primary />
-      </div>
+      <Layout>
+        {routes}
+      </Layout>
     );
   }
 }
