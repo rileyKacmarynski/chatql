@@ -2,7 +2,7 @@ import React, {Component } from 'react';
 import { Menu, Image, Button, Container } from 'semantic-ui-react'
 import { NavLink, } from 'react-router-dom';
 
-import logo from '../../content/graphqlLogo.png';
+import Logo from '../UI/Logo/Logo';
 
 class MainMenu extends Component {
     state = {
@@ -18,10 +18,7 @@ class MainMenu extends Component {
         return (
             <Menu stackable pointing secondary >
             <Menu.Item style={{paddingBottom: '0'}}>
-                <Image
-                        size='mini'
-                        src={logo}
-                    />
+                <Logo size='mini' />
             </Menu.Item>
             <Menu.Item 
                     as={NavLink}

@@ -1,0 +1,5 @@
+.Auth body > div,
+.Auth body > div > div,
+.Auth body > div > div > div.login-form {
+  height: 100%;
+}
