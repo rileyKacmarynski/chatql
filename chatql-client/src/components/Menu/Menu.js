@@ -1,5 +1,5 @@
 import React, {Component } from 'react';
-import { Menu, Image } from 'semantic-ui-react'
+import { Menu, Image, Button, Container } from 'semantic-ui-react'
 import { NavLink, } from 'react-router-dom';
 
 import logo from '../../content/graphqlLogo.png';
@@ -16,8 +16,8 @@ class MainMenu extends Component {
         const { activeItem } = this.state;
 
         return (
-            <Menu stackable inverted >
-            <Menu.Item>
+            <Menu stackable pointing secondary >
+            <Menu.Item style={{paddingBottom: '0'}}>
                 <Image
                         size='mini'
                         src={logo}
@@ -28,6 +28,7 @@ class MainMenu extends Component {
                     exact
                     to="/"
                     name='home'
+                    color='pink'
             />
             <Menu.Menu position='right'>
                 <Menu.Item 
@@ -35,20 +36,15 @@ class MainMenu extends Component {
                     exact
                     to="/login"
                     name='login'
+                    color='pink'
                 />
                 <Menu.Item 
                     as={NavLink}
                     exact
                     to="/signup"
                     name='signup'
+                    color='pink'
                 />
-                {/* <Menu.Item 
-                    as={NavLink}
-                    to="/logout"
-                    name='logout'
-                    active={activeItem == 'logout'}
-                    onClick={this.handleItemClick}
-                /> */}
             </Menu.Menu>
         </Menu>
         )
