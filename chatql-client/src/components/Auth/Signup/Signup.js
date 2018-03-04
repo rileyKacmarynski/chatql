@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classes from '../Auth.css';
 import { Grid} from 'semantic-ui-react';
 import LogoHeader  from '../../../components/LogoHeader/LogoHeader';
-import AuthForm from '../../../components/AuthForm/AuthForm';
+import SignupForm from './SignupForm';
 
 export class Signup extends Component {
   render() {
@@ -11,7 +11,7 @@ export class Signup extends Component {
         <Grid textAlign='center' verticalAlign='middle'>
           <Grid.Column style={{maxWidth: '450px'}}>
             <LogoHeader>Sign-up to start messaging</LogoHeader>
-            <AuthForm buttonText='Signup'/>
+            <SignupForm buttonText='Signup'/>
           </Grid.Column>
         </Grid>
       </div>

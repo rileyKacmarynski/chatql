@@ -3,6 +3,8 @@ import { Menu, Image, Button, Container } from 'semantic-ui-react'
 import { NavLink, } from 'react-router-dom';
 
 import Logo from '../UI/Logo/Logo';
+import { AuthMenu } from './authMenu/authMenu';
+import { isAuthenticated } from '../../helpers/auth';
 
 class MainMenu extends Component {
     state = {
@@ -14,35 +16,51 @@ class MainMenu extends Component {
      
     render(){
         const { activeItem } = this.state;
-
+        let authMenu = (
+            <Menu.Menu position='right'>
+            <Menu.Item 
+                as={NavLink}
+                exact
+                to="/login"
+                name='login'
+                color='pink'
+            />
+            <Menu.Item 
+                as={NavLink}
+                exact
+                to="/signup"
+                name='signup'
+                color='pink'
+            />
+        </Menu.Menu>
+        );
+        if(isAuthenticated()){
+            authMenu = 
+            (
+                <Menu.Menu position='right'>
+                    <Menu.Item 
+                        as={NavLink}
+                        exact
+                        to="/logout"
+                        name='logout'
+                        color='pink'
+                    />
+                </Menu.Menu>
+            );
+        }
         return (
             <Menu stackable pointing secondary >
-            <Menu.Item style={{paddingBottom: '0'}}>
-                <Logo size='mini' />
-            </Menu.Item>
-            <Menu.Item 
+                <Menu.Item style={{paddingBottom: '0'}}>
+                    <Logo size='mini' />
+                </Menu.Item>
+                <Menu.Item 
                     as={NavLink}
                     exact
                     to="/"
                     name='home'
                     color='pink'
-            />
-            <Menu.Menu position='right'>
-                <Menu.Item 
-                    as={NavLink}
-                    exact
-                    to="/login"
-                    name='login'
-                    color='pink'
                 />
-                <Menu.Item 
-                    as={NavLink}
-                    exact
-                    to="/signup"
-                    name='signup'
-                    color='pink'
-                />
-            </Menu.Menu>
+            <AuthMenu />
         </Menu>
         )
     }

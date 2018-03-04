@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react';
+import {Form, Segment, Button } from 'semantic-ui-react';
 
-const AuthForm = (props) => {
+const LoginForm = () => {
   return (
     <Form size='large'>
         <Segment stacked>
@@ -18,10 +18,10 @@ const AuthForm = (props) => {
                 placeholder='Password'
                 type='password'
             />
-            <Button primary fluid size='large'>{props.buttonText}</Button>
+            <Button primary fluid size='large'>Log-in</Button>
         </Segment>
     </Form>
   )
 };
 
-export default AuthForm;
+export default LoginForm;

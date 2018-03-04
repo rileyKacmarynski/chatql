@@ -49,7 +49,7 @@ class AuthService{
 
     async checkForExistingUser(username){
         try{
-            const user = await this.getUser(username);
+            const user = await this.getUsers(username);
 
             return user.entries.length > 0 
                 ? true 
