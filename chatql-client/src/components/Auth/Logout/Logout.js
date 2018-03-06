@@ -8,7 +8,7 @@ export class Logout extends Component {
   async componentDidMount(){
     localStorage.removeItem(AUTH_TOKEN);
     try {
-      await this.props.children.resetStore();
+      await this.props.client.resetStore();
     } catch(e) {
       //we don't actually want to let them know
       //we couldn't reset the store YOLO

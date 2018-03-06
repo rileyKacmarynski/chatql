@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Menu } from 'semantic-ui-react';
 import {NavLink } from 'react-router-dom'
 
-import { isAuthenticated } from '../../../helpers/auth';
 
-export class AuthMenu extends Component {
-    render() {
-        let authMenu = (
-            <Menu.Menu position='right'>
+const AuthMenu = props => {
+    let authMenu = (
+        <Menu.Menu position='right'>
             <Menu.Item 
                 as={NavLink}
                 exact
@@ -23,24 +21,22 @@ export class AuthMenu extends Component {
                 color='pink'
             />
         </Menu.Menu>
+    );
+    if(props.isAuthenticated){
+        authMenu = 
+        (
+            <Menu.Menu position='right'>
+                <Menu.Item 
+                    as={NavLink}
+                    exact
+                    to="/logout"
+                    name='logout'
+                    color='pink'
+                />
+            </Menu.Menu>
         );
-        if(isAuthenticated()){
-            debugger;
-            authMenu = 
-            (
-                <Menu.Menu position='right'>
-                    <Menu.Item 
-                        as={NavLink}
-                        exact
-                        to="/logout"
-                        name='logout'
-                        color='pink'
-                    />
-                </Menu.Menu>
-            );
-        }
-        return  authMenu;
-    }       
-};
+    }
+    return authMenu;
+}    
 
 export default AuthMenu;

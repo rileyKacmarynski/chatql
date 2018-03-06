@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
-import {Form, Segment, Button, Label, Portal } from 'semantic-ui-react';
-import { graphql, compose, withApollo } from 'react-apollo';
+import {Form, Segment, Button } from 'semantic-ui-react';
+import { graphql, withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
 import debounce from 'lodash/debounce';
 import { withRouter } from 'react-router-dom';
 
 import {AUTH_TOKEN} from '../../constants';
 
-class LoginForm extends Component {
+export class SignupForm extends Component {
     state = {
         username: '',
         password: '',
@@ -56,19 +56,12 @@ class LoginForm extends Component {
         });
         const {token} = result.data.signup;
         this.saveUserData(token);
-        console.log(this.props);
         this.props.history.push('/');
     }
 
     saveUserData = token => localStorage.setItem(AUTH_TOKEN, token);
 
     render(){
-        const errorLabel = this.state.userExists &&
-            <Label basic color='red' pointing='above'>
-                Username taken
-            </Label>
-        
-        
         return (
             <Form size='large'>
                 <Segment stacked>
@@ -82,7 +75,6 @@ class LoginForm extends Component {
                             placeholder='Email Address'
                             onChange={(e) => this.handleUserOnChange(e)}
                         />
-                        {errorLabel}
                     </Form.Field>
                     <Form.Input
                         fluid
@@ -117,4 +109,4 @@ mutation signup($username: String!, $password: String!){
 }
 `
 
-export default graphql(SIGNUP, {name: 'signup'})(withRouter(withApollo(LoginForm)));
+export default graphql(SIGNUP, {name: 'signup'})(withRouter(withApollo(SignupForm)));

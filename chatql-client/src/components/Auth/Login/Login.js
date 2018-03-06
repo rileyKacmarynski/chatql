@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import classes from '../Auth.css';
-import {Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react';
+import { Grid, Message } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 
 import LogoHeader from '../../../components/LogoHeader/LogoHeader';

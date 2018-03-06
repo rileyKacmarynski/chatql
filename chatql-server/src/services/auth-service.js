@@ -25,7 +25,8 @@ class AuthService{
         return users.entries.map(u => {
             return {
                 username: u.Username._,
-                id: u.RowKey._
+                id: u.RowKey._,
+                password: u.Password._,
             };
         });
     }
@@ -86,24 +87,25 @@ class AuthService{
 
     async login(username, password){
         try{
-            let user = await this.getUser(username)
-            if(!user){
+            let users = await this.getUsers(username);
+            if(!users){
                 throw new Error(`could not find user with email: ${args.email}`);
             }
-            user = user.entries[0];
-            if(!await bcrypt.compare(password, user.Password._)){
+            const user = users[0];
+            
+            if(!await bcrypt.compare(password, user.password)){
                 throw new Error("Invalid password");
             }
-            const token = await jwt.sign({ userId: user.RowKey._ }, APP_SECRET);
+            const token = await jwt.sign({ userId: user.id }, APP_SECRET);
             return {
                 token,
                 user: {
-                    username: user.Username._,
-                    id: user.RowKey._
+                    username: user.username,
+                    id: user.id
                 },
             };
         } catch (e){
-            throw e;
+            console.log(e);
         }
     }
 }

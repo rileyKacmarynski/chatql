@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import {withApollo} from 'react-apollo' 
 
-import Layout from './components/Layout/Layout';
+import Layout from './containers/Layout/Layout';
 import Messenger from "./containers/Messenger/Messenger";
-import Login from './components/Auth/Login/Login';
 import Logout from './components/Auth/Logout/Logout';
-import Signup from './components/Auth/Signup/Signup';
-import { isAuthenticated } from './helpers/auth';
+import asyncComponent from './hoc/asyncComponent';
+import { AUTH_TOKEN } from './constants';
+
+const Signup = asyncComponent(() => {
+  return import('./components/Auth/Signup/Signup');
+});
+
+const Login = asyncComponent(() => {
+  return import('./components/Auth/Login/Login');
+});
 
 class App extends Component {
   render() {
@@ -19,8 +26,7 @@ class App extends Component {
         <Redirect to="/" />
       </Switch>
     )
-
-    if(isAuthenticated()){
+    if(localStorage.getItem(AUTH_TOKEN) != null){
         routes = (
           <Switch>
           <Route path="/logout" component={Logout} />
@@ -37,4 +43,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withApollo(App);
