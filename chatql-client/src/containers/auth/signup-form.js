@@ -5,7 +5,7 @@ import gql from 'graphql-tag';
 import debounce from 'lodash/debounce';
 import { withRouter } from 'react-router-dom';
 
-import {AUTH_TOKEN} from '../../../constants';
+import {AUTH_TOKEN} from '../../constants';
 
 class LoginForm extends Component {
     state = {
@@ -107,7 +107,7 @@ query users($username: String){
         username
     }   
 }
-`;
+`
 
 const SIGNUP = gql`
 mutation signup($username: String!, $password: String!){

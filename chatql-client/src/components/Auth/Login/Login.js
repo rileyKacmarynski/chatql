@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import classes from '../Auth.css';
 import {Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 
 import LogoHeader from '../../../components/LogoHeader/LogoHeader';
-import LoginForm from './LoginForm';
+import LoginForm from '../../../containers/auth/login-form';
 
-export class Login extends Component {
+export class Login extends PureComponent {
   render() {
     return (
       <div className={classes.Auth}>
