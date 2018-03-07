@@ -18,7 +18,7 @@ const MainMenu = props => {
                 name='home'
                 color='pink'
             />
-        <AuthMenu />
+        <AuthMenu isAuthenticated={props.isAuthenticated}/>
     </Menu>
     )
 }

@@ -67,7 +67,6 @@ export class SignupForm extends Component {
             this.setState({ signupLoading: false });
             return;
         }
-        const {token} = result.data.signup;
         this.setState({ signupLoading: false });
         this.props.history.push('/');
     }

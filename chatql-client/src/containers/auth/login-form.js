@@ -28,8 +28,7 @@ class LoginForm extends Component{
         });
         this.setState({loading: false});    
         
-        const {token} = result.data.login;
-        if(result.data.error){
+        if(!result.data.login.token){
             console.log("Error loggin in");
             return;
         }

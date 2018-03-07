@@ -2,10 +2,8 @@ import React from 'react';
 import { Menu } from 'semantic-ui-react';
 import {NavLink } from 'react-router-dom'
 
-import { getCurrentCredential } from '../../../querys/auth-queries';
-
 const AuthMenu = props => {
-    const { token } = props.getCurrentCredential;
+
     let authMenu = (
         <Menu.Menu position='right'>
             <Menu.Item 
@@ -24,7 +22,7 @@ const AuthMenu = props => {
             />
         </Menu.Menu>
     );
-    if(token && token !== ""){
+    if(props.isAuthenticated){
         authMenu = 
         (
             <Menu.Menu position='right'>
@@ -41,4 +39,4 @@ const AuthMenu = props => {
     return authMenu;
 }    
 
-export default getCurrentCredential(AuthMenu);
+export default AuthMenu;
