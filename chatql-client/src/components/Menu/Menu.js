@@ -6,7 +6,6 @@ import Logo from '../UI/Logo/Logo';
 import AuthMenu  from './authMenu/authMenu';
 
 const MainMenu = props => {
-
     return (
         <Menu stackable pointing secondary >
             <Menu.Item style={{paddingBottom: '0'}}>
@@ -19,7 +18,7 @@ const MainMenu = props => {
                 name='home'
                 color='pink'
             />
-        <AuthMenu isAuthenticated={props.isAuthenticated}/>
+        <AuthMenu />
     </Menu>
     )
 }

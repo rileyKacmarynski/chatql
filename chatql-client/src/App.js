@@ -7,6 +7,7 @@ import Messenger from "./containers/Messenger/Messenger";
 import Logout from './components/Auth/Logout/Logout';
 import asyncComponent from './hoc/asyncComponent';
 import { AUTH_TOKEN } from './constants';
+import {getCurrentCredential} from './querys/auth-queries';
 
 const Signup = asyncComponent(() => {
   return import('./components/Auth/Signup/Signup');
@@ -18,15 +19,17 @@ const Login = asyncComponent(() => {
 
 class App extends Component {
   render() {
+    const { token } = this.props.getCurrentCredential
     let routes= (
       <Switch>
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
+        <Route path="/logout" component={Logout} />        
         <Route path="/" exact component={Messenger} />
         <Redirect to="/" />
       </Switch>
     )
-    if(localStorage.getItem(AUTH_TOKEN) != null){
+    if(token && token !== ""){
         routes = (
           <Switch>
           <Route path="/logout" component={Logout} />
@@ -43,4 +46,4 @@ class App extends Component {
   }
 }
 
-export default withApollo(App);
+export default getCurrentCredential(withApollo(App));

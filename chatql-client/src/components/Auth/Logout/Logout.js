@@ -1,18 +1,38 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Loader } from 'semantic-ui-react';
+import { withApollo } from 'react-apollo';
+
 import { AUTH_TOKEN } from '../../../constants';
+import { currentCredentialQuery, getCurrentCredential } from '../../../querys/auth-queries';
+
 
 export class Logout extends Component {
 
   async componentDidMount(){
-    localStorage.removeItem(AUTH_TOKEN);
-    try {
-      await this.props.client.resetStore();
-    } catch(e) {
-      //we don't actually want to let them know
-      //we couldn't reset the store YOLO
-    }
+    const {client} = this.props;
+    const credential = {
+      user: {
+        username: '',
+        id: '',
+        __typename: 'User'
+      },
+      token: '',
+      __typename: 'AuthPayload'
+    };
+
+    client.writeQuery({
+      query: currentCredentialQuery,
+      data: {
+        user: {
+          username: '',
+          id: '',
+          __typename: 'User'
+        },
+        token: '',
+        __typename: 'AuthPayload'
+      }
+    });
   }
   
   render(props) {
@@ -21,4 +41,4 @@ export class Logout extends Component {
   }
 };
 
-export default Logout;
+export default withApollo(Logout);

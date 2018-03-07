@@ -6,34 +6,36 @@ import debounce from 'lodash/debounce';
 import { withRouter } from 'react-router-dom';
 
 import {AUTH_TOKEN} from '../../constants';
+import {currentCredentialQuery, withSignupMutation, checkUsernameQuery} from '../../querys/auth-queries';
 
 export class SignupForm extends Component {
     state = {
         username: '',
         password: '',
-        loading: false,
+        userLoading: false,
+        signupLoading: false,
         userExists: false,
         usernameIcon: 'user',
     }
     
     checkUserName = debounce(async () => {
-        this.setState({ loading: true});
+        this.setState({ userLoading: true});
         const { username } = this.state;
 
         const result = await this.props.client.query({
-            query: EXISTING_USERNAME,
+            query: checkUsernameQuery,
             variables: { username }
         });
 
         if(result.data.users.length > 0 ){
             this.setState({
                 userExists: true, 
-                loading: false, 
+                userLoading: false, 
                 usernameIcon: 'remove'
             });
         } else {
             this.setState({
-                loading: false, 
+                userLoading: false, 
                 usernameIcon: 'checkmark',
                 userExists: false,
             })
@@ -47,19 +49,38 @@ export class SignupForm extends Component {
 
     handleSignup = async (e) => {
         e.preventDefault();
+        this.setState({ signupLoading: true });
         const {username, password } = this.state;
-        const result = await this.props.signup({
-            variables: {
-                username,
-                password,
-            }
-        });
+
+        let result;
+        try{
+            result = await this.props.signup({
+                variables: {
+                    username,
+                    password,
+                },
+                update: this.saveUserDataToCache
+            });
+            
+        } catch(e) {
+            console.log(e);
+            this.setState({ signupLoading: false });
+            return;
+        }
         const {token} = result.data.signup;
-        this.saveUserData(token);
+        this.setState({ signupLoading: false });
         this.props.history.push('/');
     }
 
-    saveUserData = token => localStorage.setItem(AUTH_TOKEN, token);
+    saveUserDataToCache = (proxy, {data}) => {
+        if(data.signup){
+            //write data back to the cache
+            proxy.writeQuery({
+                query: currentCredentialQuery,
+                data: { ...data.signup }
+            });
+        }
+    }
 
     render(){
         return (
@@ -68,7 +89,7 @@ export class SignupForm extends Component {
                     <Form.Field>
                         <Form.Input
                             error={this.state.userExists}
-                            loading={this.state.loading}
+                            loading={this.state.userLoading}
                             fluid
                             icon={this.state.usernameIcon}
                             iconPosition='left'
@@ -85,6 +106,7 @@ export class SignupForm extends Component {
                         onChange={(e) => this.setState({password: e.target.value})}
                     />
                     <Button primary fluid size='large'
+                        loading={this.state.signupLoading}
                         onClick={(e) => this.handleSignup(e)}
                     >Sign-up</Button>
                 </Segment>
@@ -93,20 +115,5 @@ export class SignupForm extends Component {
     }
 }
 
-const EXISTING_USERNAME = gql`
-query users($username: String){
-    users(username: $username){
-        username
-    }   
-}
-`
 
-const SIGNUP = gql`
-mutation signup($username: String!, $password: String!){
-  signup(username: $username, password: $password){
-    token
-  }
-}
-`
-
-export default graphql(SIGNUP, {name: 'signup'})(withRouter(withApollo(SignupForm)));
+export default withSignupMutation(withRouter(withApollo(SignupForm)));

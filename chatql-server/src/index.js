@@ -15,7 +15,7 @@ const resolvers = {
 };
 
 const pubSub = new PubSub();
-const server = new GraphQLServer({
+const app = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,
     context: req => ({
@@ -25,5 +25,12 @@ const server = new GraphQLServer({
     })
 })
 
-server.express.post(server.options.endpoint, (req, res, done) => getUser(req, res, done, azure));
-server.start(() => console.log('Server is running on http://localhost:4000'));
+app.express.post(app.options.endpoint, (req, res, done) => getUser(req, res, done, azure));
+
+// app.use((req, res, next) => {
+//     const options = { Keys: [COOKIE_SECRET_KEY]};
+//     req.cookies = new Cookies(req, res, options);
+//     next();
+// })
+
+app.start(() => console.log('Server is running on http://localhost:4000'));

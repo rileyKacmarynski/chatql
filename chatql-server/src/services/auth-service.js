@@ -76,7 +76,7 @@ class AuthService{
             return {
                 token,
                 user : {
-                    username: user.username,
+                    username: user.Username._,
                     id: user.RowKey._
                 }
             }

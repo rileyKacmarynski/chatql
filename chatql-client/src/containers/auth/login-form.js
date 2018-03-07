@@ -5,6 +5,7 @@ import gql from 'graphql-tag';
 import { withRouter } from 'react-router-dom';
 
 import {AUTH_TOKEN} from '../../constants';
+import { currentCredentialQuery, login } from '../../querys/auth-queries';
 
 class LoginForm extends Component{
     state = {
@@ -17,27 +18,34 @@ class LoginForm extends Component{
         this.setState({loading: true});
         e.preventDefault();
         const {username, password } = this.state;
-        try{
 
-            const result = await this.props.login({
-                variables: {
-                    username,
-                    password,
-                }
-            });
-            const {token} = result.data.login;
-            this.setState({loading: false});    
-            this.saveUserData(token);
-            if(token != null){
-                this.props.history.push('/');
-            }
+        const result = await this.props.login({
+            variables: {
+                username,
+                password,
+            },
+            update: this.saveUserDataToCache
+        });
+        this.setState({loading: false});    
+        
+        const {token} = result.data.login;
+        if(result.data.error){
+            console.log("Error loggin in");
+            return;
         }
-        catch(e){
-            console.log("Error Logging in.", e);
-        }
+        
+        this.props.history.push('/');
     }
 
-    saveUserData = token => localStorage.setItem(AUTH_TOKEN, token);
+    saveUserDataToCache = (proxy, {data}) => {
+        if(data.login){
+            //write data back to the cache
+            proxy.writeQuery({
+                query: currentCredentialQuery,
+                data: { ...data.login }
+            });
+        }
+    }
 
     render () {
         return (
@@ -68,16 +76,4 @@ class LoginForm extends Component{
     }
 }
 
-const LOGIN = gql`
-mutation login($username: String!, $password: String!){
-  login(username: $username, password: $password){
-    user {
-        id
-        username
-    }
-    token
-  }
-}
-`
-
-export default graphql(LOGIN, {name: 'login'})(withRouter(LoginForm));
+export default login(withRouter(LoginForm));
