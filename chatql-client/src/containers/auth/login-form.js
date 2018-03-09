@@ -5,45 +5,32 @@ import gql from 'graphql-tag';
 import { withRouter } from 'react-router-dom';
 
 import {AUTH_TOKEN} from '../../constants';
-import { currentCredentialQuery, login } from '../../querys/auth-queries';
+import { currentCredentialQuery, loginWithData } from '../../querys/auth-queries';
 
 class LoginForm extends Component{
     state = {
         username: '',
         password: '',
-        loading: false
+        loading: false,
+        error: false
     }
 
     handleLogin = async (e) => {
         this.setState({loading: true});
         e.preventDefault();
-        const {username, password } = this.state;
+        const { username, password } = this.state;
 
-        const result = await this.props.login({
-            variables: {
-                username,
-                password,
-            },
-            update: this.saveUserDataToCache
-        });
-        this.setState({loading: false});    
-        
-        if(!result.data.login.token){
-            console.log("Error loggin in");
+        const result = await this.props.submit(username, password);
+
+        this.setState({loading: false});
+
+        if(result.data.error || !result.data.login){
+            console.log("unable to log in");
+            this.setState({password: ''});
             return;
         }
-        
-        this.props.history.push('/');
-    }
 
-    saveUserDataToCache = (proxy, {data}) => {
-        if(data.login){
-            //write data back to the cache
-            proxy.writeQuery({
-                query: currentCredentialQuery,
-                data: { ...data.login }
-            });
-        }
+        this.props.history.push('/');
     }
 
     render () {
@@ -54,7 +41,8 @@ class LoginForm extends Component{
                         fluid
                         icon='user'
                         iconPosition='left'
-                        placeholder='Email Address'
+                        placeholder='Username'
+                        value={this.state.username}
                         onChange={(e) => this.setState({username: e.target.value})}
                     />
                     <Form.Input
@@ -63,6 +51,7 @@ class LoginForm extends Component{
                         iconPosition='left'
                         placeholder='Password'
                         type='password'
+                        value={this.state.password}
                         onChange={e => this.setState({password: e.target.value})}
                     />
                     <Button loading={this.state.loading}
@@ -75,4 +64,4 @@ class LoginForm extends Component{
     }
 }
 
-export default login(withRouter(LoginForm));
+export default loginWithData()(withRouter(LoginForm));

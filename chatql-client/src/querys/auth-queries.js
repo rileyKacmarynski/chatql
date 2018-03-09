@@ -1,6 +1,8 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag'
 
+import * as constants from '../constants';
+
 export const currentCredentialQuery = gql(
     `
     query CurrentCredentialQuery {
@@ -33,9 +35,26 @@ mutation login($username: String!, $password: String!){
 }
 `
 
-export const login = graphql(loginMutation, {
-    name: 'login'
+export const loginWithData = () => graphql(loginMutation, {
+    props: ({mutate}) => ({
+        submit: (username, password) => 
+            mutate({ variables: { username, password}}),
+    }),
+    options: {
+        update: saveLoginToCache
+    }
 });
+
+const saveLoginToCache = (proxy, {data}) => {
+    if(data.login){
+        //write data back to the cache
+        proxy.writeQuery({
+            query: currentCredentialQuery,
+            data: { ...data.login }
+        });
+        localStorage.setItem(constants.AUTH_TOKEN, data.login.token);
+    }
+}
 
 export const checkUsernameQuery = gql`
 query users($username: String){
@@ -57,6 +76,23 @@ mutation signup($username: String!, $password: String!){
 }
 `
 
-export const withSignupMutation = graphql(signupMutation, {
-    name: 'signup'
-});
+export const SignupWithData = graphql(signupMutation, {
+    props: ({ mutate }) => ({
+        submit: (username, password) => 
+            mutate({ variables: { username, password}}),
+    }),
+    options: {
+        update: saveSignupToCache
+    }
+})
+
+const saveSignupToCache = (proxy, {data}) => {
+    if(data.Signup){
+        //write data back to the cache
+        proxy.writeQuery({
+            query: currentCredentialQuery,
+            data: { ...data.Signup }
+        });
+        localStorage.setItem(constants.AUTH_TOKEN, data.login.token);        
+    }
+}

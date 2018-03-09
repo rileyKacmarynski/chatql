@@ -12,6 +12,7 @@
   "author": "Riley Kacmarynski",
   "license": "ISC",
   "dependencies": {
+    "apollo-link-state": "^0.4.0",
     "apollo-server-express": "^1.3.2",
     "async": "^2.6.0",
     "azure-storage": "^2.8.0",

@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce';
 import { withRouter } from 'react-router-dom';
 
 import {AUTH_TOKEN} from '../../constants';
-import {currentCredentialQuery, withSignupMutation, checkUsernameQuery} from '../../querys/auth-queries';
+import { SignupWithData, checkUsernameQuery } from '../../querys/auth-queries';
 
 export class SignupForm extends Component {
     state = {
@@ -48,37 +48,20 @@ export class SignupForm extends Component {
     }
 
     handleSignup = async (e) => {
+        this.setState({loading: true});
         e.preventDefault();
-        this.setState({ signupLoading: true });
-        const {username, password } = this.state;
+        const { username, password } = this.state;
 
-        let result;
-        try{
-            result = await this.props.signup({
-                variables: {
-                    username,
-                    password,
-                },
-                update: this.saveUserDataToCache
-            });
-            
-        } catch(e) {
-            console.log(e);
-            this.setState({ signupLoading: false });
+        const result = await this.props.submit(username, password);
+
+        this.setState({loading: false});
+
+        if(result.data.error || !result.data.signup){
+            console.log("unable to sign-up");
             return;
         }
-        this.setState({ signupLoading: false });
-        this.props.history.push('/');
-    }
 
-    saveUserDataToCache = (proxy, {data}) => {
-        if(data.signup){
-            //write data back to the cache
-            proxy.writeQuery({
-                query: currentCredentialQuery,
-                data: { ...data.signup }
-            });
-        }
+        this.props.history.push('/');
     }
 
     render(){
@@ -92,7 +75,7 @@ export class SignupForm extends Component {
                             fluid
                             icon={this.state.usernameIcon}
                             iconPosition='left'
-                            placeholder='Email Address'
+                            placeholder='Username'
                             onChange={(e) => this.handleUserOnChange(e)}
                         />
                     </Form.Field>
@@ -115,4 +98,4 @@ export class SignupForm extends Component {
 }
 
 
-export default withSignupMutation(withRouter(withApollo(SignupForm)));
+export default SignupWithData(withRouter(withApollo(SignupForm)));

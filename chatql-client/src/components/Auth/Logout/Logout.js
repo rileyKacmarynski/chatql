@@ -11,15 +11,6 @@ export class Logout extends Component {
 
   async componentDidMount(){
     const {client} = this.props;
-    const credential = {
-      user: {
-        username: '',
-        id: '',
-        __typename: 'User'
-      },
-      token: '',
-      __typename: 'AuthPayload'
-    };
 
     client.writeQuery({
       query: currentCredentialQuery,
