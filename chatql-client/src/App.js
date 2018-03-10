@@ -1,26 +1,49 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { Switch, Route } from 'react-router-dom';
-import { Button } from 'semantic-ui-react';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import {withApollo} from 'react-apollo' 
 
-//#E10098
+import Layout from './containers/Layout/Layout';
+import Messenger from "./containers/Messenger/Messenger";
+import Logout from './components/Auth/Logout/Logout';
+import asyncComponent from './hoc/asyncComponent';
+import { AUTH_TOKEN } from './constants';
+import {getCurrentCredential} from './querys/auth-queries';
+
+const Signup = asyncComponent(() => {
+  return import('./components/Auth/Signup/Signup');
+});
+
+const Login = asyncComponent(() => {
+  return import('./components/Auth/Login/Login');
+});
 
 class App extends Component {
   render() {
+    const { token } = this.props.getCurrentCredential
+    let routes= (
+      <Switch>
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/logout" component={Logout} />        
+        <Route path="/" exact component={Messenger} />
+        <Redirect to="/" />
+      </Switch>
+    )
+    if(token && token !== ""){
+        routes = (
+          <Switch>
+          <Route path="/logout" component={Logout} />
+          <Route path="/" exact component={Messenger} />
+          <Redirect to="/" />
+        </Switch>
+        ) 
+    }
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <Button content='Primary' primary />
-      </div>
+      <Layout>
+        {routes}
+      </Layout>
     );
   }
 }
 
-export default App;
+export default getCurrentCredential(withApollo(App));
