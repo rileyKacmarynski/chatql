@@ -20,11 +20,11 @@ class AuthService{
             query = query.and('Username eq ?', username);
         }
         const users = await queryTable(this.tableService, query, 'User');
-        console.log(users);
 
         return users.entries.map(u => {
             return {
                 username: u.Username._,
+                password: u.Password._,
                 id: u.RowKey._
             };
         });
@@ -86,20 +86,22 @@ class AuthService{
 
     async login(username, password){
         try{
-            let user = await this.getUser(username)
+            let user = await this.getUsers(username)
+            // console.log(user);
             if(!user){
                 throw new Error(`could not find user with email: ${args.email}`);
             }
-            user = user.entries[0];
-            if(!await bcrypt.compare(password, user.Password._)){
+            user = user[0];
+            // console.log(user);
+            if(!await bcrypt.compare(password, user.password)){
                 throw new Error("Invalid password");
             }
-            const token = await jwt.sign({ userId: user.RowKey._ }, APP_SECRET);
+            const token = await jwt.sign({ userId: user.id }, APP_SECRET);
             return {
                 token,
                 user: {
-                    username: user.Username._,
-                    id: user.RowKey._
+                    username: user.username,
+                    id: user.id
                 },
             };
         } catch (e){

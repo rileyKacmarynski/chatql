@@ -4,7 +4,6 @@ import { NavLink, } from 'react-router-dom';
 
 import Logo from '../UI/Logo/Logo';
 import AuthMenu  from './authMenu/authMenu';
-import classes from './menu.css';
 
 const MainMenu = props => {
     return (

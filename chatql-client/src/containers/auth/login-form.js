@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import {Form, Segment, Button } from 'semantic-ui-react';
-import { graphql} from 'react-apollo';
-import gql from 'graphql-tag';
 import { withRouter } from 'react-router-dom';
 
-import {AUTH_TOKEN} from '../../constants';
-import { currentCredentialQuery, loginWithData } from '../../querys/auth-queries';
+import { loginWithData } from '../../querys/auth-queries';
 
 class LoginForm extends Component{
     state = {

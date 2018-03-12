@@ -3,8 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { Loader } from 'semantic-ui-react';
 import { withApollo } from 'react-apollo';
 
-import { AUTH_TOKEN } from '../../../constants';
-import { currentCredentialQuery, getCurrentCredential } from '../../../querys/auth-queries';
+import { currentCredentialQuery } from '../../../querys/auth-queries';
 
 
 export class Logout extends Component {

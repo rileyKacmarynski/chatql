@@ -1,5 +1,5 @@
 import React from "react";
-import { Sidebar, Segment, Menu, Icon, Header, Image } from "semantic-ui-react";
+import { Sidebar, Segment, Menu, Icon } from "semantic-ui-react";
 
 import Container from "../../../hoc/container";
 

@@ -34,6 +34,16 @@ mutation login($username: String!, $password: String!){
   }
 }
 `
+const saveLoginToCache = (proxy, {data}) => {
+    if(data.login){
+        //write data back to the cache
+        proxy.writeQuery({
+            query: currentCredentialQuery,
+            data: { ...data.login }
+        });
+        localStorage.setItem(constants.AUTH_TOKEN, data.login.token);
+    }
+}
 
 export const loginWithData = () => graphql(loginMutation, {
     props: ({mutate}) => ({
@@ -45,16 +55,6 @@ export const loginWithData = () => graphql(loginMutation, {
     }
 });
 
-const saveLoginToCache = (proxy, {data}) => {
-    if(data.login){
-        //write data back to the cache
-        proxy.writeQuery({
-            query: currentCredentialQuery,
-            data: { ...data.login }
-        });
-        localStorage.setItem(constants.AUTH_TOKEN, data.login.token);
-    }
-}
 
 export const checkUsernameQuery = gql`
 query users($username: String){
@@ -75,17 +75,6 @@ mutation signup($username: String!, $password: String!){
   }
 }
 `
-
-export const SignupWithData = graphql(signupMutation, {
-    props: ({ mutate }) => ({
-        submit: (username, password) => 
-            mutate({ variables: { username, password}}),
-    }),
-    options: {
-        update: saveSignupToCache
-    }
-})
-
 const saveSignupToCache = (proxy, {data}) => {
     if(data.Signup){
         //write data back to the cache
@@ -96,3 +85,13 @@ const saveSignupToCache = (proxy, {data}) => {
         localStorage.setItem(constants.AUTH_TOKEN, data.login.token);        
     }
 }
+
+export const SignupWithData = graphql(signupMutation, {
+    props: ({ mutate }) => ({
+        submit: (username, password) => 
+            mutate({ variables: { username, password}}),
+    }),
+    options: {
+        update: saveSignupToCache
+    }
+})

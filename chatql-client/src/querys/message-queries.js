@@ -1,5 +1,7 @@
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
+
+import { getCurrentCredential } from './auth-queries';
 
 export const messages = [
   {
@@ -39,6 +41,28 @@ export const messages = [
     }
   }
 ]
+
+const messageQuery = gql`
+  query MessageQuery($take: Int) {
+      messages(take: $take){
+      id
+      content
+      timestamp
+      sentBy{
+        username
+        id
+      }
+    }
+  }
+`
+
+export const MessagesWithData = compose(
+  graphql(messageQuery, {
+    options: ({ take }) => ({ variables: { take } }),
+    name: 'messageQuery'
+  }),
+  getCurrentCredential
+)
 
 
   // type Message {

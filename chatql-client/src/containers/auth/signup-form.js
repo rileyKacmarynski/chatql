@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import {Form, Segment, Button } from 'semantic-ui-react';
-import { graphql, withApollo } from 'react-apollo';
-import gql from 'graphql-tag';
+import { withApollo } from 'react-apollo';
 import debounce from 'lodash/debounce';
 import { withRouter } from 'react-router-dom';
 
-import {AUTH_TOKEN} from '../../constants';
 import { SignupWithData, checkUsernameQuery } from '../../querys/auth-queries';
 
 export class SignupForm extends Component {
