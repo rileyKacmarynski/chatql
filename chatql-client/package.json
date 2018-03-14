@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "ajv": "^6.2.0",
+    "aphrodite": "^1.2.5",
     "apollo-boost": "^0.1.1",
     "apollo-cache-inmemory": "^1.1.9",
     "apollo-client": "^2.2.5",
@@ -16,6 +17,7 @@
     "lodash": "^4.17.5",
     "moment": "^2.21.0",
     "react": "^16.2.0",
+    "react-animations": "^1.0.0",
     "react-apollo": "^2.0.4",
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",

@@ -5,6 +5,7 @@ import debounce from 'lodash/debounce';
 import { withRouter } from 'react-router-dom';
 
 import { SignupWithData, checkUsernameQuery } from '../../querys/auth-queries';
+import UsernameInput from '../../components/Auth/Signup/UsernameInput'
 
 export class SignupForm extends Component {
     state = {
@@ -41,7 +42,10 @@ export class SignupForm extends Component {
     }, 750)
 
     handleUserOnChange = (e) => {
-        this.setState({username: e.target.value});
+        this.setState({
+            username: e.target.value, 
+            userExists: false,
+        });
         this.checkUserName();
     }
 
@@ -67,15 +71,11 @@ export class SignupForm extends Component {
             <Form size='large'>
                 <Segment stacked>
                     <Form.Field>
-                        <Form.Input
-                            error={this.state.userExists}
-                            loading={this.state.userLoading}
-                            fluid
-                            icon={this.state.usernameIcon}
-                            iconPosition='left'
-                            placeholder='Username'
+                        <UsernameInput 
                             onChange={(e) => this.handleUserOnChange(e)}
-                        />
+                            userExists={this.state.userExists}
+                            userLoading={this.state.userLoading}
+                            usernameIcon={this.state.usernameIcon} />
                     </Form.Field>
                     <Form.Input
                         fluid
