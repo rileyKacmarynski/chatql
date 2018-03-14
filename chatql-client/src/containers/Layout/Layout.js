@@ -27,7 +27,6 @@ export class Layout extends Component {
         
         const { token } = this.props.getCurrentCredential;
         const isAuthenticated = token && token !== "";
-        console.log(isAuthenticated);
         return (
             <Container>
                 <MobileLayout 

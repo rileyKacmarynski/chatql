@@ -11,8 +11,6 @@ export class Messenger extends Component {
   
 
   render() {
-    console.log(this.props)
-
     return (
       <Container text style={{ marginTop: '2em' }}>
         <MessageHeader />
