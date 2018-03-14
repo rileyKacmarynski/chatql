@@ -6,11 +6,17 @@ import Message from "../../components/Messages/Message";
 
 const MessageWindow = props => {
 
-  const messageContent = (props.loading || !props.messages)
-    ? <DimLoader message={"Loading messages"} loading={props.loading} />
-    : props.messages.map((m, index) => (
-        <Message message={m} user={props.user} />
-      ));
+  let messageContent; 
+  if(props.loading ){
+    messageContent = <DimLoader message={"Loading messages"} loading={props.loading} />
+  } else {
+    messageContent = props.messages 
+      ? props.messages.map((m, index) => (
+          <Message message={m} user={props.user} />
+        ))
+      : 'No messages available';
+  }
+  
 
   return (
     <Segment

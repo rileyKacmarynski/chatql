@@ -6,9 +6,9 @@ import IncomingMessage from "./IncomingMessage";
 
 const Message = props => {
   const Message =
-    props.user && props.user.id !== props.message.sentBy.id
-      ? IncomingMessage
-      : OutgoingMessage;
+    props.user && props.user.id == props.message.sentBy.id
+      ? OutgoingMessage
+      : IncomingMessage;
 
   return (
     <Message timestamp={props.message.timestamp} id={props.message.id}>
