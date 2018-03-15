@@ -26,12 +26,17 @@ describe('<MessageWindow />', () => {
     wrapper = shallow(<MessageWindow />);
   });
 
+  it('should render without error', () => {
+    expect(wrapper.find(MessageWindow)).toBeDefined();
+  });
+
   it('should render a loader if the message window is awaiting message results', () => {
     wrapper.setProps({ loading: true });
-    expect(wrapper.find(DimLoader)).toHaveLength(1);
+    expect(wrapper.find(DimLoader)).toBeDefined();
   });
+
   it('should render a should render a message if one exists', () => {
     wrapper.setProps({ messages, user });
-    expect(wrapper.find(Message)).toHaveLength(1);
+    expect(wrapper.find(Message)).toBeDefined();
   });
 })

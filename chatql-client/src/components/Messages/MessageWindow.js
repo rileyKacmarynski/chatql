@@ -12,7 +12,7 @@ const MessageWindow = props => {
   } else {
     messageContent = props.messages 
       ? props.messages.map((m, index) => (
-          <Message message={m} user={props.user} />
+          <Message key={m.id} message={m} user={props.user} />
         ))
       : 'No messages available';
   }

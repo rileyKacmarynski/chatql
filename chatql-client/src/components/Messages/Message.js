@@ -5,6 +5,11 @@ import OutgoingMessage from "./OutgoingMessage";
 import IncomingMessage from "./IncomingMessage";
 
 const Message = props => {
+  
+  if(!props.message){
+    return null;
+  }
+
   const Message =
     props.user && props.user.id == props.message.sentBy.id
       ? OutgoingMessage
