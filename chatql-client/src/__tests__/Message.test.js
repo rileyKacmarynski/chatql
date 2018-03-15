@@ -4,6 +4,7 @@ import Adapter from 'enzyme-adapter-react-16';
 
 import Message from '../components/Messages/Message';
 import OutgoingMessage from '../components/Messages/OutgoingMessage';
+import IncomingMessage from '../components/Messages/IncomingMessage';
 
 configure({adapter: new Adapter()} );
 
@@ -31,15 +32,15 @@ describe('<Message />', () => {
     expect(wrapper.find(Message)).toBeDefined();
   });
 
-  it('should render a message', () => {
-    wrapper.setProps({ message: message, user: user });
-    console.log(wrapper.find(Message));
-   expect(wrapper.contains(<Message />)).toBeTruthy();
-  });
-
   it(`should render <OutgoingMessage /> if the user id on the message and user
     prop match`, () => {
-      expect(wrapper.find(OutgoingMessage)).toBeDefined();
-    });
+      wrapper.setProps({ message: message, user: user });  
+      expect(wrapper.find(OutgoingMessage).length).toEqual(1);
+  });
 
+  it(`should render <IncomingMessage /> if the user id on the message and user
+    prop match`, () => {
+      wrapper.setProps({ message: message, user: {username: 'differentUser', id: 'differentId'} });  
+      expect(wrapper.find(IncomingMessage).length).toEqual(1);
+  });
 });

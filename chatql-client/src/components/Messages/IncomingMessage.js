@@ -20,7 +20,7 @@ const IncomingMessage = (props) => {
         </Label>
         <MessageTimestamp time={props.timestamp} />
       </div>
-  </div>
+    </div>
   )
 };
 

@@ -60,7 +60,8 @@ export const checkUsernameQuery = gql`
 query users($username: String){
     users(username: $username){
         username
-    }   
+        __typename
+    }
 }
 `
 
