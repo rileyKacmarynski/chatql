@@ -19,16 +19,18 @@ const MessageWindow = props => {
   
 
   return (
-    <Segment
-      secondary
-      style={{
-        height: "60vh",
-        display: "flex",
-        "flex-flow": "column"
-      }}
-    >
-      {messageContent}
-    </Segment>
+
+      <Segment
+        secondary
+        style={{
+          overflow: 'auto',
+          height: "60vh",
+          display: "block",
+          marginBottom: '10px'
+        }}
+      >
+        {messageContent}
+      </Segment>
   );
 };
 

@@ -12,5 +12,8 @@ describe('<MessageForm />', () => {
     wrapper = shallow(<MessageForm />);
   });
 
+  it('should be disabled if the user is not logged in', () => {
+
+  });
   
 })

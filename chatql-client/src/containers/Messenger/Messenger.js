@@ -8,7 +8,16 @@ import MessageForm from './MessageForm';
 
 export class Messenger extends Component {
   
-  
+  componentWillReceiveProps(newProps){
+    if(!newProps.messageQuery.loading){
+      if(this.unsubscribe){
+        this.unsubscribe();
+      }
+      this.unsubscribe = newProps.subcribeToNewMessages({
+        room: ''
+      });
+    }
+  }
 
   render() {
     return (
@@ -16,8 +25,8 @@ export class Messenger extends Component {
         <MessageHeader />
         <Segment.Group big raised >
           <MessageWindow 
-            user={this.props.getCurrentCredential.user}
-            messages={this.props.messageQuery.messages} 
+          user={this.props.getCurrentCredential.user}
+          messages={this.props.messageQuery.messages} 
             loading={this.props.messageQuery.loading}/>
           <MessageForm loading={this.props.messageQuery.loading}/>
         </Segment.Group>

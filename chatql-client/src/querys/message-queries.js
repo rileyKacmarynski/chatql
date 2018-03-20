@@ -3,45 +3,6 @@ import gql from 'graphql-tag';
 
 import { getCurrentCredential } from './auth-queries';
 
-export const messages = [
-  {
-    id: 1,
-    content: 'message 1',
-    timestamp: new Date(),
-    sentBy: {
-      id: '11111',
-      username: 'username1'
-    }
-  },
-  {
-    id: 2,
-    content: 'message 2, but lets try a really long message. so that it wraps',
-    timestamp: new Date(),
-    sentBy: {
-      id: '22222',
-      username: 'username2'
-    }
-  },
-  {
-    id: 3,
-    content: 'message 3, but lets try a really long message. so that it wraps',
-    timestamp: new Date(),
-    sentBy: {
-      id: '11111',
-      username: 'username1'
-    }
-  },
-  {
-    id: 4,
-    content: 'message 4',
-    timestamp: new Date(),
-    sentBy: {
-      id: '22222',
-      username: 'username2'
-    }
-  }
-]
-
 const messageQuery = gql`
   query MessageQuery($take: Int) {
       messages(take: $take){
@@ -56,12 +17,55 @@ const messageQuery = gql`
   }
 `
 
+const messagesSubscription = gql`
+  subscription{
+    newMessage{
+      id 
+      content
+      timestamp
+      sentBy{
+        username
+        id
+      }
+    }
+  }
+`;
+
+const getMessages = graphql(messageQuery, {
+  props: props => {
+    return {
+      ...props,
+      subcribeToNewMessages: params => {
+        return props.messageQuery.subscribeToMore({
+          document: messagesSubscription,
+          updateQuery: (prev, {subscriptionData}) => {
+            if(!subscriptionData.data.newMessage){
+              return prev;
+            }
+            
+            const newMessage =  {
+              ...subscriptionData.data.newMessage,
+              timestamp: new Date().toString()
+            };
+            const newMessages = [ ...prev.messages, newMessage ];
+
+            return {
+              ...prev,
+              messages: newMessages
+            }
+          }
+        })
+      }
+    }
+  },
+  options: ({ take }) => ({ variables: { take: 20 } }),
+  name: 'messageQuery',
+})
+
+
 export const MessagesWithData = compose(
-  graphql(messageQuery, {
-    options: ({ take }) => ({ variables: { take } }),
-    name: 'messageQuery'
-  }),
-  getCurrentCredential
+  getMessages,
+  getCurrentCredential,
 )
 
 
