@@ -58,7 +58,7 @@ const getMessages = graphql(messageQuery, {
       }
     }
   },
-  options: ({ take }) => ({ variables: { take: 20 } }),
+  options: ({ take }) => ({ variables: { take: 25 } }),
   name: 'messageQuery',
 })
 

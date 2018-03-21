@@ -5,21 +5,27 @@ const guid = require('guid');
 const { insertEntity, queryTable } = require('../helpers/azure-storage-wrapper');
 const { CONNECTION_STRING, APP_SECRET } = require('../constants');
 
-class AuthService{
+function makeAuthService({
+    tableService,
+    azure
+}){
+    return Object.freeze({
+        getUsers, 
+        getUserByAuthToken,
+        checkForExistingUser,
+        createUser,
+        login
+    });
 
-    constructor(azure){
-        this.tableService = azure.createTableService(CONNECTION_STRING);
-        this.azure = azure;
-    }
-
-    async getUsers(username){
-        let query = new this.azure.TableQuery()
+    
+    async function getUsers(username){
+        let query = new azure.TableQuery()
         .where('PartitionKey eq ?', 'User')
         
         if(username){
             query = query.and('Username eq ?', username);
         }
-        const users = await queryTable(this.tableService, query, 'User');
+        const users = await queryTable(tableService, query, 'User');
 
         return users.entries.map(u => {
             return {
@@ -30,16 +36,16 @@ class AuthService{
         });
     }
 
-    async getUserByAuthToken(request){
+    async function getUserByAuthToken(request){
         const token = request.headers.authorize;
         if(token){
             try{
                 const { userId } = jwt.verify(token, APP_SECRET);
-                const query = new this.azure.TableQuery()
+                const query = new azure.TableQuery()
                     .where('PartitionKey eq ?', 'User')
                     .and('RowKey eq ?', userId);
                 
-                return await queryTable(this.tableService, query, 'User');
+                return await queryTable(tableService, query, 'User');
             
             } catch (e){
                 throw new Error('Unable to verify id');
@@ -47,9 +53,9 @@ class AuthService{
         }
     }
 
-    async checkForExistingUser(username){
+    async function checkForExistingUser(username){
         try{
-            const user = await this.getUser(username);
+            const user = await getUser(username);
 
             return user.entries.length > 0 
                 ? true 
@@ -59,7 +65,7 @@ class AuthService{
         }
     }
 
-    async createUser(username, password){
+    async function createUser(username, password){
         const pwd = await bcrypt.hash(password, 10)
 
         const user = {
@@ -69,7 +75,7 @@ class AuthService{
             Password:  {'_': pwd},
         };
         try {
-            const res = await insertEntity(this.tableService, user, 'User');
+            const res = await insertEntity(tableService, user, 'User');
              
             const token = jwt.sign({ userId: user.RowKey._ }, APP_SECRET);
             return {
@@ -84,9 +90,9 @@ class AuthService{
         }
     }
 
-    async login(username, password){
+    async function login(username, password){
         try{
-            let user = await this.getUsers(username)
+            let user = await getUsers(username)
             // console.log(user);
             if(!user){
                 throw new Error(`could not find user with email: ${args.email}`);
@@ -108,8 +114,10 @@ class AuthService{
             throw e;
         }
     }
+
+
 }
 
 module.exports = {
-    AuthService,
+    makeAuthService,
 }
