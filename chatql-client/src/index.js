@@ -22,7 +22,7 @@ const middlewareAuthLink = new ApolloLink((operation, next) => {
     const authorizationHeader = token ? `Bearer ${token}` : null
     operation.setContext({
         headers: {
-            authorization: authorizationHeader
+            Authorization: authorizationHeader
         }
     });
     return next(operation);

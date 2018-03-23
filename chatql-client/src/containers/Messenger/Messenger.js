@@ -28,7 +28,10 @@ export class Messenger extends Component {
           user={this.props.getCurrentCredential.user}
           messages={this.props.messageQuery.messages} 
             loading={this.props.messageQuery.loading}/>
-          <MessageForm loading={this.props.messageQuery.loading}/>
+          <MessageForm 
+            createMessage={this.props.submit}
+            loading={this.props.messageQuery.loading}
+            user={this.props.getCurrentCredential.user}/>
         </Segment.Group>
       </Container>
     )

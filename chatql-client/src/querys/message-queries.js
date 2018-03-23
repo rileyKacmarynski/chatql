@@ -1,29 +1,29 @@
-import { graphql, compose } from 'react-apollo';
-import gql from 'graphql-tag';
+import { graphql, compose } from "react-apollo";
+import gql from "graphql-tag";
 
-import { getCurrentCredential } from './auth-queries';
+import { getCurrentCredential } from "./auth-queries";
 
 const messageQuery = gql`
   query MessageQuery($take: Int) {
-      messages(take: $take){
+    messages(take: $take) {
       id
       content
       timestamp
-      sentBy{
+      sentBy {
         username
         id
       }
     }
   }
-`
+`;
 
 const messagesSubscription = gql`
-  subscription{
-    newMessage{
-      id 
+  subscription {
+    newMessage {
+      id
       content
       timestamp
-      sentBy{
+      sentBy {
         username
         id
       }
@@ -38,40 +38,74 @@ const getMessages = graphql(messageQuery, {
       subcribeToNewMessages: params => {
         return props.messageQuery.subscribeToMore({
           document: messagesSubscription,
-          updateQuery: (prev, {subscriptionData}) => {
-            if(!subscriptionData.data.newMessage){
+          updateQuery: (prev, { subscriptionData }) => {
+            if (!subscriptionData.data.newMessage) {
               return prev;
             }
-            
-            const newMessage =  {
+
+            const newMessage = {
               ...subscriptionData.data.newMessage,
               timestamp: new Date().toString()
             };
-            const newMessages = [ ...prev.messages, newMessage ];
+            const newMessages = [...prev.messages, newMessage];
 
             return {
               ...prev,
               messages: newMessages
-            }
+            };
           }
-        })
+        });
       }
-    }
+    };
   },
   options: ({ take }) => ({ variables: { take: 25 } }),
-  name: 'messageQuery',
-})
+  name: "messageQuery"
+});
 
+const createMessageMutation = gql`
+  mutation createMessage($userId: ID!, $content: String!) {
+    createMessage(userId: $userId, content: $content) {
+      id
+      content
+      timestamp
+      sentBy {
+        username
+        id
+      }
+    }
+  }
+`;
+
+export const createMessage = graphql(createMessageMutation, {
+  props: ({ mutate }) => ({
+    submit: (userId, content) => 
+      mutate({ 
+        variables: { userId, content },
+        optimisticResponse: {
+          __typename: "Mutation",
+          createMessage: {
+            content: content,
+            sentBy: {
+              id: userId,
+              __typename: "User"
+            },
+            __typename: "Message"
+          }
+        }
+      
+      })   
+  })
+});
 
 export const MessagesWithData = compose(
-  getMessages,
+  getMessages, 
   getCurrentCredential,
-)
+  createMessage 
+);
 
-
-  // type Message {
-  //   id: ID!
-  //   content: String!
-  //   timestamp: String
-  //   sentBy: User
-  // }
+// type Message {
+//   id: ID!
+//   content: String!
+//   timestamp: String
+//   sentBy: User
+// }

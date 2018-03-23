@@ -8,6 +8,7 @@ async function getUser(req, res, done, azure){
         tableService, 
         azure
     });
+
     const user = await authService.getUserByAuthToken(req);
     if(user && user.entries && user.entries.length > 0){
         req.user = user.entries[0];

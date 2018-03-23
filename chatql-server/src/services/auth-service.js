@@ -37,7 +37,12 @@ function makeAuthService({
     }
 
     async function getUserByAuthToken(request){
-        const token = request.headers.authorize;
+        let token = request.headers.authorization
+        if(!token){
+            return;
+        }
+
+        token = token.replace('Bearer ', '');
         if(token){
             try{
                 const { userId } = jwt.verify(token, APP_SECRET);
@@ -48,7 +53,7 @@ function makeAuthService({
                 return await queryTable(tableService, query, 'User');
             
             } catch (e){
-                throw new Error('Unable to verify id');
+                console.log("Welp we tried.");
             }
         }
     }
