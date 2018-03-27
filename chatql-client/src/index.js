@@ -5,12 +5,17 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
-import { ApolloClient } from 'apollo-client';
-import { HttpLink } from 'apollo-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloLink, split } from 'apollo-client-preset';
+import { 
+    HttpLink,
+    ApolloClient, 
+    ApolloLink, 
+    split, 
+    InMemoryCache 
+} from 'apollo-boost';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
+import { resolvers } from './localState/resolvers';
+import { typeDefs } from './localState/typeDefs';
 
 import * as constants from './constants';
 
@@ -53,7 +58,7 @@ const link = split(
 
 const client = new ApolloClient({
     link: link,
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
 });
 
 ReactDOM.render(

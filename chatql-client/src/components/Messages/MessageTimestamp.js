@@ -1,12 +1,17 @@
-import React from 'react';
-import moment from 'moment';
+import React from "react";
+import moment from "moment";
 
-const MessageTimestamp = (props) => {
+const MessageTimestamp = props => {
+  const style = {
+    ...props.style,
+    fontSize: ".8rem",
+  };
+
   return (
-    <div style={{fontSize: '.8rem', marginLeft: '5px'}} >
+    <div style={style}>
       {moment(props.time).fromNow()}
     </div>
-  )
+  );
 };
-
+//new Date(props.time).toLocaleString()
 export default MessageTimestamp;

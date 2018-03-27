@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 
 import { getCurrentCredential } from "./auth-queries";
 
-const messageQuery = gql`
+export const messageQuery = gql`
   query MessageQuery($take: Int) {
     messages(take: $take) {
       id
@@ -17,7 +17,7 @@ const messageQuery = gql`
   }
 `;
 
-const messagesSubscription = gql`
+export const messagesSubscription = gql`
   subscription {
     newMessage {
       id
@@ -62,7 +62,7 @@ const getMessages = graphql(messageQuery, {
   name: "messageQuery"
 });
 
-const createMessageMutation = gql`
+export const createMessageMutation = gql`
   mutation createMessage($userId: ID!, $content: String!) {
     createMessage(userId: $userId, content: $content) {
       id
@@ -84,8 +84,11 @@ export const createMessage = graphql(createMessageMutation, {
         optimisticResponse: {
           __typename: "Mutation",
           createMessage: {
+            id: "temp",
             content: content,
+            timestamp: '',
             sentBy: {
+              username: "sending",
               id: userId,
               __typename: "User"
             },

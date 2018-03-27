@@ -60,9 +60,9 @@ function makeAuthService({
 
     async function checkForExistingUser(username){
         try{
-            const user = await getUser(username);
+            const users = await getUsers(username);
 
-            return user.entries.length > 0 
+            return users.entries.length > 0 
                 ? true 
                 : false;
         } catch(e) {
@@ -80,13 +80,16 @@ function makeAuthService({
             Password:  {'_': pwd},
         };
         try {
+            console.log(user);
+            
             const res = await insertEntity(tableService, user, 'User');
-             
+            
             const token = jwt.sign({ userId: user.RowKey._ }, APP_SECRET);
+            
             return {
                 token,
                 user : {
-                    username: user.username,
+                    username: user.Username._,
                     id: user.RowKey._
                 }
             }
@@ -107,6 +110,7 @@ function makeAuthService({
             if(!await bcrypt.compare(password, user.password)){
                 throw new Error("Invalid password");
             }
+
             const token = await jwt.sign({ userId: user.id }, APP_SECRET);
             return {
                 token,

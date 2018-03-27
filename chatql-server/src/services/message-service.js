@@ -25,7 +25,7 @@ function makeMessageService({ azure, tableService }) {
     };
     try {
       const res = await insertEntity(tableService, message, "Message");
-      const timestamp = new Date().toLocaleTimeString();
+      const timestamp = new Date().toLocaleString();
       return {
         id: message.RowKey._,
         content: message.Content._,

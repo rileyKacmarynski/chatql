@@ -1,6 +1,6 @@
 const { CONNECTION_STRING } = require('../constants'); 
 const {makeMessageService} = require('../services/message-service');
-const {AuthService} = require('../services/auth-service');
+const {makeAuthService} = require('../services/auth-service');
 
 function users(parent, {username}, context, info) {
     const tableService = context.azure.createTableService(CONNECTION_STRING);
@@ -21,7 +21,18 @@ function messages(parent, {take}, context, info){
     return messageService.getMessages(take);
 }
 
+function authPayload(parent, args, context, info){
+    return {
+        token: "",
+        user: {
+            id: "",
+            username: "",
+        }
+    }
+}
+
 module.exports = {
 users,
 messages,
+authPayload,
 }
