@@ -1,9 +1,8 @@
 import React from 'react';
-import {Icon, Menu, Button } from 'semantic-ui-react'
-import { NavLink, Link } from 'react-router-dom';
+import { Icon, Menu } from 'semantic-ui-react'
+import { Link } from 'react-router-dom';
 
 import Logo from '../../UI/Logo/Logo'
-import AuthMenu  from '../authMenu/authMenu';
 
 const MobileMenu = (props) => {
 

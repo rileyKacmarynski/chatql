@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import {withRouter} from 'react-router-dom'
 
-import MainMenu from '../../components/menu/menu';
-import {AUTH_TOKEN} from '../../constants';
 import { getCurrentCredential } from '../../querys/auth-queries';
 import Container from '../../hoc/container';
 import MobileLayout from '../../components/UI/Layouts/MobileLayout';
@@ -27,9 +25,7 @@ export class Layout extends Component {
 
     render() {
         
-        const { token } = this.props.getCurrentCredential;
-        const isAuthenticated = token && token !== "";
-        console.log(isAuthenticated);
+        const isAuthenticated = this.props.user != null;
         return (
             <Container>
                 <MobileLayout 
@@ -47,4 +43,4 @@ export class Layout extends Component {
     }
 };
 
-export default withRouter(getCurrentCredential(Layout));
+export default withRouter(Layout);

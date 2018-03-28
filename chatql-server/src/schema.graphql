@@ -1,6 +1,7 @@
 type Query {
   users(username: String): [User]
   messages (take: Int): [Message]
+  authPayload: AuthPayload
 }
 
 type Mutation {

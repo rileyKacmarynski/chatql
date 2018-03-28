@@ -1,52 +1,51 @@
-import React from 'react';
-import { Segment, Label } from 'semantic-ui-react';
+import React, { Component } from "react";
+import { Segment } from "semantic-ui-react";
 
-const MessageWindow = (props) => {
-  const messageContent = props.messages.map((m, index) => {
-    if(index % 2 == 0){
-      return (
-        <div key={index} style={{ 
-            display: 'flex',
-            justifyContent: 'flex-start',
-            'max-width':'70%',
-            marginRight: '30%',
-            marginBottom: '10px',              
-            borderRadius: '10px',
-            }}>
-          <Label pointing='left' color='white' style={{lineHeight: '1.2'}}>
-            {m.content}
-            <Label.Detail style={{display:'block', marginLeft: '0'}}>{m.sentBy.username}</Label.Detail>
-          </Label>
-        </div>)
+import DimLoader from "../../components/UI/DimLoader";
+import Message from "../../components/Messages/Message";
+
+class MessageWindow extends Component {
+  componentDidMount(){
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate(){
+    this.scrollToBottom();
+  }
+
+  scrollToBottom(){
+    this.el.scrollIntoView({ behavior: 'smooth'});
+  }
+
+  render() {
+    let messageContent;
+    if (this.props.loading) {
+      messageContent = (
+        <DimLoader message={"Loading messages"} loading={this.props.loading} />
+      );
+    } else {
+      messageContent = this.props.messages
+        ? this.props.messages.map((m, index) => (
+            <Message key={m.id} message={m} user={this.props.user} />
+          ))
+        : "No messages available";
     }
-    return(
-    <div key={index} style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        'max-width':'70%',
-        marginLeft: '30%',
-        marginBottom: '10px',
-        borderRadius: '10px',
-      }}>
-      <Label pointing='right' color='pink' style={{alignItems: 'flex-end', lineHeight: '1.2'}} >
-        {m.content}
-        <Label.Detail style={{display:'block', marginLeft: '0'}}>{m.sentBy.username}</Label.Detail>
-      </Label>
-    </div>
-  )
-  });
-  
-  
-  return (
-    <Segment secondary 
-    style={{
-      height: '60vh',
-      display: 'flex',
-      'flex-flow': 'column',
-    }} >
-    {messageContent}
-  </Segment>
-  )
-};
+
+    return (
+      <Segment
+        secondary
+        style={{
+          overflow: "auto",
+          height: "60vh",
+          display: "block",
+          marginBottom: "10px"
+        }}
+      >
+        {messageContent}
+        <div ref={el => {this.el = el; }} />
+      </Segment>
+    );
+  }
+}
 
 export default MessageWindow;

@@ -5,12 +5,17 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
-import { ApolloClient } from 'apollo-client';
-import { HttpLink } from 'apollo-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloLink, split } from 'apollo-client-preset';
+import { 
+    HttpLink,
+    ApolloClient, 
+    ApolloLink, 
+    split, 
+    InMemoryCache 
+} from 'apollo-boost';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
+import { resolvers } from './localState/resolvers';
+import { typeDefs } from './localState/typeDefs';
 
 import * as constants from './constants';
 
@@ -22,7 +27,7 @@ const middlewareAuthLink = new ApolloLink((operation, next) => {
     const authorizationHeader = token ? `Bearer ${token}` : null
     operation.setContext({
         headers: {
-            authorization: authorizationHeader
+            Authorization: authorizationHeader
         }
     });
     return next(operation);
@@ -45,7 +50,7 @@ const wsLink = new WebSocketLink({
 const link = split(
     ({ query }) => {
         const {kind, operation } = getMainDefinition(query);
-        return kind === 'OperationDefinition' && operation === 'Subscription';
+        return kind === 'OperationDefinition' && operation === 'subscription';
     },
     wsLink,
     httpLinkWithAuthToken,
@@ -53,7 +58,7 @@ const link = split(
 
 const client = new ApolloClient({
     link: link,
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
 });
 
 ReactDOM.render(
