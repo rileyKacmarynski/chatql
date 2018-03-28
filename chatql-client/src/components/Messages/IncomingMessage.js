@@ -25,7 +25,9 @@ const IncomingMessage = props => {
         >
           {props.children}
         </Label>
-        <MessageTimestamp time={props.timestamp} />
+        <div>
+          <MessageTimestamp time={props.timestamp} />
+        </div>
       </div>
     </div>
   );

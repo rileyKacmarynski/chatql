@@ -80,16 +80,16 @@ export class SignupForm extends Component {
           <Mutation
             mutation={signupMutation}
             update={(cache, { data }) => {
-              if (data.Signup) {
+              if (data.signup) {
                 //write data back to the cache
                 // cache.writeData({ data: { authPayload: data.Signup } });
 
                   cache.writeQuery({
                     query: currentCredentialQuery,
-                    data: { ...data.Signup }
+                    data: { ...data.signup }
                   });
 
-                localStorage.setItem(constants.AUTH_TOKEN, data.Signup.token);
+                localStorage.setItem(constants.AUTH_TOKEN, data.signup.token);
               }
             }}
           >
