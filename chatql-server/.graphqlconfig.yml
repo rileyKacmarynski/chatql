@@ -3,4 +3,4 @@ projects:
     schemaPath: "src/schema.graphql"
     extensions:
       endpoints:
-        default: "https://chatqldemoserver.azurewebsites.net"
+        default: "https://ancient-cliffs-99593.herokuapp.com"
